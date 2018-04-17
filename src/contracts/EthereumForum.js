@@ -19,13 +19,11 @@ import TruffleContract from 'truffle-contract';
 import ForumContract from 'truffle_artifacts/contracts/Forum.json';
 import HashUtils from 'HashUtils';
 
-let Forum = TruffleContract(ForumContract);
-Forum.setProvider(web3.currentProvider);
-
 class EthereumForum {
   constructor() {
     this.topicOffsetCounter = 0;
     this.topicOffsets = {};
+    this.resolveForumContract();
   }
 
   post = async (hash, parentHash) => {
@@ -35,28 +33,38 @@ class EthereumForum {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return Forum.deployed()
-        .then(i => { return i.post(parentHash, hash, {from: account}) })
+      console.log(account);
+      return this.forum.post(parentHash, hash, {form: account})
     })
   }
 
   subscribeMessages(callback) {
-    Forum.deployed().then(f => {
-      f.Topic({}, {fromBlock: 0}).watch((error, result) => {
-        const parentHash = HashUtils.solidityHashToCid(result.args._parentHash);
-        const messageHash = HashUtils.solidityHashToCid(result.args.contentHash);
+    this.forumContract().Topic({}, {fromBlock: 0}).watch((error, result) => {
+      const parentHash = HashUtils.solidityHashToCid(result.args._parentHash);
+      const messageHash = HashUtils.solidityHashToCid(result.args.contentHash);
 
-        if(!this.topicOffsets[messageHash]) { // sometimes we get the same topic twice...
-          this.topicOffsets[messageHash] = this.topicOffsetCounter;
-          this.topicOffsetCounter = this.topicOffsetCounter + 1;
-          callback(messageHash, parentHash);
-        }
-      });
+      if(!this.topicOffsets[messageHash]) { // sometimes we get the same topic twice...
+        this.topicOffsets[messageHash] = this.topicOffsetCounter;
+        this.topicOffsetCounter = this.topicOffsetCounter + 1;
+        callback(messageHash, parentHash);
+      }
     });
   }
 
   topicOffset(hash) {
     return this.topicOffsets[hash];
+  }
+
+  resolveForumContract = async () => {
+    let Forum = TruffleContract(ForumContract);
+    Forum.setProvider(web3.currentProvider);
+
+    this.forum = await Forum.deployed();
+    if (process.env.REACT_APP_ENV == 'staging') {
+      this.forum = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
+    } else {
+      this.forum = await Forum.deployed();
+    }
   }
 }
 
