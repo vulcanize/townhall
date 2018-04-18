@@ -33,8 +33,7 @@ class EthereumForum {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      console.log(account);
-      return this.forum.post(parentHash, hash, {form: account})
+      return this.forum.post(parentHash, hash, {from: account})
     })
   }
 
@@ -51,7 +50,7 @@ class EthereumForum {
     });
   }
 
-  topicOffset(hash) {
+  topicOffset = (hash) => {
     return this.topicOffsets[hash];
   }
 
@@ -60,10 +59,11 @@ class EthereumForum {
     Forum.setProvider(web3.currentProvider);
 
     this.forum = await Forum.deployed();
-    if (process.env.REACT_APP_ENV == 'staging') {
-      this.forum = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
-    } else {
+    if (!process.env.REACT_APP_ENV) {
       this.forum = await Forum.deployed();
+    } else {
+      this.forum = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
+      // ## throw error on start if not defined
     }
   }
 }

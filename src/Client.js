@@ -89,7 +89,7 @@ class Client {
       .catch(() => Promise.reject(new MessageBoardError('An error occurred saving the message to your local IPFS.')));
 
     await this.forum.post(messageHash, message.parent)
-      .catch((error) => Promise.reject(new MessageBoardError('An error occurred verifying the message: ' + error)));
+      .catch(() => Promise.reject(new MessageBoardError('An error occurred verifying the message: ')));
 
     return this.remoteStorage.pin(messageHash)
       .catch(() => Promise.reject(new MessageBoardError('An error occurred saving the message to Menlo IPFS.')));
