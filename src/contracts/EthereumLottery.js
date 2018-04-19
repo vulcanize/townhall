@@ -39,7 +39,7 @@ class EthereumLottery {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return await this.lotteryContract.upvote(offset, {from: account})
+      return this.lotteryContract.upvote(offset, {from: account})
     })
   }
 
@@ -47,14 +47,13 @@ class EthereumLottery {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return await this.lotteryContract.downvote(offset, {from: account})
+      return this.lotteryContract.downvote(offset, {from: account});
     })
   }
 
   payoutAccounts = async () => {
-    let promises = [0,1,2,3,4].map(i =>
-      Lottery.deployed()
-        .then(l => l.payouts.call(i))
+    let promises = [0,1,2,3,4].map(async i =>
+      this.lotteryContract.payouts.call(i)
         .then(r => r.toString())
     )
 
@@ -63,8 +62,7 @@ class EthereumLottery {
 
   rewards = async () => {
     let promises = [0,1,2,3,4].map(i =>
-      Lottery.deployed()
-        .then(l => l.reward.call(i))
+      this.lotteryContract.reward.call(i)
         .then(r => r.toString())
     )
 
@@ -74,10 +72,8 @@ class EthereumLottery {
   claim = async (payoutIndex) => {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
-      console.log(account);
 
-      return Lottery.deployed()
-        .then(i => i.claim(payoutIndex, {from: account}))
+      return this.lotteryContract.claim(payoutIndex, {from: account});
     })
   }
 
