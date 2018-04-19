@@ -68,7 +68,7 @@ contract Lottery is Beneficiary, Sponsored {
     function unvote(uint256 _offset) external vote(msg.sender, _offset, 0) transfersToken(msg.sender) {
     }
     function endEpoch() external {
-        require(era() >= epochTimestamp + 1 minutes);
+        require(era() >= epochTimestamp + 1 days);
         epochTimestamp = era();
 
         uint256[5] memory winners;
