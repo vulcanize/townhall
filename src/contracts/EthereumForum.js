@@ -64,7 +64,6 @@ class EthereumForum {
       this.forumContract = await Forum.deployed();
     } else {
       this.forumContract = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
-      // ## throw error on start if not defined
     }
   }
 }

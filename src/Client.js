@@ -15,8 +15,8 @@
  */
 
 import web3 from './web3_override';
-import truffleContract from 'truffle-contract';
-import tokenContract from './truffle_artifacts/contracts/AppToken.json';
+import TruffleContract from 'truffle-contract';
+import TokenContract from './truffle_artifacts/contracts/AppToken.json';
 import MessageBoardError from './MessageBoardError';
 
 class Client {
@@ -26,7 +26,7 @@ class Client {
     this.lottery = lottery;
     this.localStorage = localStorage;
     this.remoteStorage = remoteStorage;
-    this.token = truffleContract(tokenContract);
+    this.tokenContract = null;
 
     forum.subscribeMessages(this.onNewMessage.bind(this));
     this.votes = {};
@@ -37,18 +37,16 @@ class Client {
   getAccountDetails() {
     if (!web3) return Promise.reject();
 
-    this.token.setProvider(web3.currentProvider);
-
     return new Promise((resolve, reject) => {
-      web3.eth.getAccounts((err, result) => {
-        const account = result[0];
+      web3.eth.getAccounts().then(async (accounts) => {
+        const account = accounts[0];
         if (!account) {
           return reject();
         }
 
         this.account = account;
-        this.token.deployed()
-          .then(i => i.balanceOf(account))
+        await this.resolveTokenContract();
+        this.tokenContract.balanceOf(account)
           .then(balance => resolve({ account, balance }));
       });
     });
@@ -122,6 +120,19 @@ class Client {
   getRewards() {
     return this.lottery.rewards();
   }
+
+  resolveTokenContract = async () => {
+    let Token = TruffleContract(TokenContract);
+    Token.setProvider(web3.currentProvider);
+
+    if (!process.env.REACT_APP_ENV) {
+      this.tokenContract = await Token.deployed();
+    } else {
+      this.tokenContract =
+        await Token.at(process.env.REACT_APP_MENLO_TOKEN_ADDRESS);
+    }
+  }
+
 }
 
 export default Client;
