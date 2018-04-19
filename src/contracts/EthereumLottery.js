@@ -88,7 +88,7 @@ class EthereumLottery {
     if (!process.env.REACT_APP_ENV) {
       this.lotteryContract = await Lottery.deployed();
     } else {
-      this.lotteryContract = await Lottery.at(process.env.REACT_APP_FORUM_ADDRESS);
+      this.lotteryContract = await Lottery.at(process.env.REACT_APP_TOWNHALL_ADDRESS);
       // ## throw error on start if not defined
     }
   }
