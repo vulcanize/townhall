@@ -14,7 +14,7 @@ module.exports = (deployer, network) => {
     poster = process.env.MENLO_POSTER
   }
 
-  if (network.match(/^(development|ganance|integration)$/)) {
+  if (network.match(/^(development|ganache|integration)$/)) {
     // Fund personal account with MET
     let amount = 10000000000000000000000;
     AppToken.deployed().then(token => {
