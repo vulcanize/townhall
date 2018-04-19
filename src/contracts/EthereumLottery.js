@@ -18,28 +18,28 @@ import web3 from 'web3_override';
 import TruffleContract from 'truffle-contract';
 import LotteryContract from 'truffle_artifacts/contracts/Lottery.json';
 
-let Lottery = TruffleContract(LotteryContract);
-Lottery.setProvider(web3.currentProvider);
-
 class EthereumLottery {
-  epoch = () => {
-    return Lottery.deployed()
-      .then(l => l.epochCurrent.call())
-      .then(r => parseInt(r.toString(), 0))
+  constructor() {
+    this.lotteryContract = null;
+    this.resolveContract();
   }
 
-  votes = (offset) => {
-    return Lottery.deployed()
-      .then(i => i.votes.call(offset))
-      .then(r => parseInt(r.toString(), 0))
+  epoch = async () => {
+    await this.resolveContract();
+    let current = await this.lotteryContract.epochCurrent.call();
+    return parseInt(current.toString(), 0);
+  }
+
+  votes = async (offset) => {
+    let count = await this.lotteryContract.votes.call(offset);
+    return parseInt(count.toString(), 0);
   }
 
   upvote = async (offset) => {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return Lottery.deployed()
-        .then(i => i.upvote(offset, {from: account}))
+      return await this.lotteryContract.upvote(offset, {from: account})
     })
   }
 
@@ -47,8 +47,7 @@ class EthereumLottery {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return Lottery.deployed()
-        .then(i => i.downvote(offset, {from: account}))
+      return await this.lotteryContract.downvote(offset, {from: account})
     })
   }
 
@@ -80,6 +79,18 @@ class EthereumLottery {
       return Lottery.deployed()
         .then(i => i.claim(payoutIndex, {from: account}))
     })
+  }
+
+  resolveContract = async () => {
+    let Lottery = TruffleContract(LotteryContract);
+    Lottery.setProvider(web3.currentProvider);
+
+    if (!process.env.REACT_APP_ENV) {
+      this.lotteryContract = await Lottery.deployed();
+    } else {
+      this.lotteryContract = await Lottery.at(process.env.REACT_APP_FORUM_ADDRESS);
+      // ## throw error on start if not defined
+    }
   }
 }
 

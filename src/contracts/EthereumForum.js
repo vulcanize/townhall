@@ -23,7 +23,8 @@ class EthereumForum {
   constructor() {
     this.topicOffsetCounter = 0;
     this.topicOffsets = {};
-    this.resolveForumContract();
+    this.forumContract = null;
+    this.resolveContract();
   }
 
   post = async (hash, parentHash) => {
@@ -33,12 +34,13 @@ class EthereumForum {
     return web3.eth.getAccounts().then(async (accounts) => {
       let account = accounts[0];
 
-      return this.forum.post(parentHash, hash, {from: account})
+      return this.forumContract.post(parentHash, hash, {from: account})
     })
   }
 
-  subscribeMessages(callback) {
-    this.forumContract().Topic({}, {fromBlock: 0}).watch((error, result) => {
+  subscribeMessages = async (callback) => {
+    await this.resolveForumContract();
+    this.forum.Topic({}, {fromBlock: 0}).watch((error, result) => {
       const parentHash = HashUtils.solidityHashToCid(result.args._parentHash);
       const messageHash = HashUtils.solidityHashToCid(result.args.contentHash);
 
@@ -54,15 +56,14 @@ class EthereumForum {
     return this.topicOffsets[hash];
   }
 
-  resolveForumContract = async () => {
+  resolveContract = async () => {
     let Forum = TruffleContract(ForumContract);
     Forum.setProvider(web3.currentProvider);
 
-    this.forum = await Forum.deployed();
     if (!process.env.REACT_APP_ENV) {
-      this.forum = await Forum.deployed();
+      this.forumContract = await Forum.deployed();
     } else {
-      this.forum = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
+      this.forumContract = await Forum.at(process.env.REACT_APP_TOWNHALL_ADDRESS);
       // ## throw error on start if not defined
     }
   }
