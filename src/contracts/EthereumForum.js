@@ -16,7 +16,7 @@
 
 import web3 from 'web3_override';
 import TruffleContract from 'truffle-contract';
-import ForumContract from 'truffle_artifacts/contracts/Forum.json';
+import ForumContract from 'contracts/Forum.json';
 import HashUtils from 'HashUtils';
 
 class EthereumForum {

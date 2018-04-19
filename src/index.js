@@ -21,10 +21,10 @@ import RemoteIPFSStorage from 'storage/RemoteIPFSStorage';
 import EthereumForum from 'contracts/EthereumForum';
 import EthereumLottery from 'contracts/EthereumLottery';
 import MessageBoardGraph from 'storage/MessageBoardGraph';
-import Client from './Client';
+import Client from 'Client';
 import App from 'components/App';
-import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+import registerServiceWorker from 'registerServiceWorker';
+import 'index.css';
 
 const remoteStorage = new RemoteIPFSStorage(process.env.REACT_APP_REMOTE_IPFS);
 const localStorage = new JavascriptIPFSStorage();
