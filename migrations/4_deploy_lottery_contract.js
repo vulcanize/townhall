@@ -5,7 +5,7 @@ var Lottery = artifacts.require("./Lottery.sol");
 module.exports = (deployer, network) => {
   var trustee1, trustee2, trustee3, personal;
 
-  if ((network == "development") || (network == "ganache")) {
+  if ((network === "development") || (network === "ganache")) {
     // static truffle develop accounts
     // candy maple cake sugar pudding cream honey rich smooth crumble sweet treat
     trustee1 = '0x627306090abab3a6e1400e9345bc60c78a8bef57';
