@@ -167,6 +167,9 @@ Deploy to server using `shipit`:
 
 ## Staging and Testnet
 
+        yarn build:staging
+        serve -s build
+
 ### Rinkeby & Mist
 
 MetaMask can be used with a Rinkeby account to test against.
@@ -219,7 +222,7 @@ TBD
 
 ## Production and Mainnet
 
-...
+
 
 ## Overriding the default configuration
 
