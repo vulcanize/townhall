@@ -16,7 +16,7 @@
 
 import web3 from 'web3_override';
 import TruffleContract from 'truffle-contract';
-import LotteryContract from 'contracts/Lottery.json';
+import LotteryContract from 'contracts/artifacts/contracts/Lottery.json';
 
 class EthereumLottery {
   constructor() {

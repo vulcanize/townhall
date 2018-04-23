@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/src/contracts/*.json
+/src/contracts/artifacts/contracts/*.json
 
 # testing
 /coverage

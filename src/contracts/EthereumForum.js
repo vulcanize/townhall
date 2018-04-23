@@ -16,7 +16,7 @@
 
 import web3 from 'web3_override';
 import TruffleContract from 'truffle-contract';
-import ForumContract from 'contracts/Forum.json';
+import ForumContract from 'contracts/artifacts/contracts/Forum.json';
 import HashUtils from 'HashUtils';
 
 class EthereumForum {
@@ -39,8 +39,8 @@ class EthereumForum {
   }
 
   subscribeMessages = async (callback) => {
-    await this.resolveForumContract();
-    this.forum.Topic({}, {fromBlock: 0}).watch((error, result) => {
+    await this.resolveContract();
+    this.forumContract.Topic({}, {fromBlock: 0}).watch((error, result) => {
       const parentHash = HashUtils.solidityHashToCid(result.args._parentHash);
       const messageHash = HashUtils.solidityHashToCid(result.args.contentHash);
 
@@ -63,7 +63,7 @@ class EthereumForum {
     if (!process.env.REACT_APP_ENV) {
       this.forumContract = await Forum.deployed();
     } else {
-      this.forumContract = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
+      this.forumContract = await Forum.at(process.env.REACT_APP_TOWNHALL_ADDRESS);
     }
   }
 }

@@ -16,7 +16,7 @@
 
 import web3 from 'web3_override';
 import TruffleContract from 'truffle-contract';
-import TokenContract from 'contracts/AppToken.json';
+import TokenContract from 'contracts/artifacts/contracts/AppToken.json';
 import MessageBoardError from 'MessageBoardError';
 
 class Client {
@@ -45,7 +45,7 @@ class Client {
         }
 
         this.account = account;
-        await this.resolveTokenContract();
+        await this.resolveContract();
         this.tokenContract.balanceOf(account)
           .then(balance => resolve({ account, balance }));
       });
@@ -121,9 +121,10 @@ class Client {
     return this.lottery.rewards();
   }
 
-  resolveTokenContract = async () => {
+  resolveContract = async () => {
     let Token = TruffleContract(TokenContract);
     Token.setProvider(web3.currentProvider);
+    console.log(Token.networks)
 
     if (!process.env.REACT_APP_ENV) {
       this.tokenContract = await Token.deployed();

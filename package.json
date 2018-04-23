@@ -21,12 +21,12 @@
     "build": "NODE_PATH=./src sh -ac '. .env.${REACT_APP_ENV}; react-scripts build'",
     "build:staging": "REACT_APP_ENV=staging yarn run build",
     "build:production": "REACT_APP_ENV=production yarn run build",
-    "test": "NODE_PATH=./src react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "menlo:deploy": "yarn run shipit staging deploy",
     "menlo:create-integration-accounts": "node scripts/create-accounts.js",
     "menlo:setup": "./scripts/setup-menlo.sh",
-    "menlo:parity-dev-chain": "./scripts/menlo-parity-start.sh"
+    "menlo:parity-dev-chain": "./scripts/menlo-parity-start.sh",
+    "test": "NODE_PATH=./src react-scripts test --env=jsdom"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
