@@ -37,4 +37,3 @@ const graph = new MessageBoardGraph();
 const client = new Client(graph, forum, lottery, localStorage, remoteStorage);
 ReactDOM.render(<App client={client} />, document.getElementById('root'));
 
-registerServiceWorker();

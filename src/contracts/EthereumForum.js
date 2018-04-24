@@ -63,7 +63,7 @@ class EthereumForum {
     if (!process.env.REACT_APP_ENV) {
       this.forumContract = await Forum.deployed();
     } else {
-      this.forumContract = await Forum.at(process.env.REACT_APP_TOWNHALL_ADDRESS);
+      this.forumContract = await Forum.at(process.env.REACT_APP_FORUM_ADDRESS);
     }
   }
 }
