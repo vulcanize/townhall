@@ -17,15 +17,16 @@
     "web3": "^1.0.0-beta.33"
   },
   "scripts": {
-    "start": "NODE_PATH=./src react-scripts start",
     "build": "NODE_PATH=./src sh -ac '. .env.${REACT_APP_ENV}; react-scripts build'",
     "build:staging": "REACT_APP_ENV=staging yarn run build",
-    "build:production": "REACT_APP_ENV=production yarn run build",
+    "build-start:staging": "yarn run build:staging && yarn run start:staging",
     "eject": "react-scripts eject",
     "menlo:deploy": "yarn run shipit staging deploy",
     "menlo:create-integration-accounts": "node scripts/create-accounts.js",
     "menlo:setup": "./scripts/setup-menlo.sh",
     "menlo:parity-dev-chain": "./scripts/menlo-parity-start.sh",
+    "start": "NODE_PATH=./src react-scripts start",
+    "start:staging": "NODE_ENV=production node server",
     "test": "NODE_PATH=./src react-scripts test --env=jsdom"
   },
   "devDependencies": {
