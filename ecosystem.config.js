@@ -2,7 +2,7 @@ module.exports = {
   apps : [
     {
       name      : 'Menlo Town Hall',
-      script    : 'yarn',
+      script    : 'npm',
       args      : 'run build-start:staging',
       env_production : {
         NODE_ENV: 'production'
@@ -19,7 +19,7 @@ module.exports = {
       path : '/var/www/menlo-town-hall',
       key  : '../menlo-infra/menlo-staging-deploy.pem',
       ssh_options: ['ForwardAgent=yes', 'StrictHostKeyChecking=no','PasswordAuthentication=no'],
-      'post-deploy' : 'yarn && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
 };
